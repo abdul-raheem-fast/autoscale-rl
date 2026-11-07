@@ -1,0 +1,32 @@
+# ---------- DVC-managed artifacts (versioned, never committed to git) ----------
+data/raw/
+data/processed/
+models/
+reports/
+# DVC cache only — dvc.lock and .dvc/config ARE committed
+.dvc/cache/
+.dvc/tmp/
+
+# ---------- MLflow local fallback store (tracking lives on DagsHub) ----------
+mlruns/
+mlartifacts/
+
+# ---------- Secrets / credentials ----------
+.env
+.env.*
+!.env.example
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.venv/
+venv/
+
+# ---------- Misc ----------
+.ipynb_checkpoints/
+.DS_Store
+Thumbs.db

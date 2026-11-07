@@ -1,0 +1,118 @@
+# =========================================================================
+# AutoScale-RL — single source of truth for every pipeline stage.
+# Every stage reads its section from this file; DVC records the md5 of each
+# section in dvc.lock, so any change here triggers the right stage on
+# `dvc repro`.
+# =========================================================================
+
+seed: 20260907            # master seed; every stage derives its own RNG from it
+
+paths:
+  raw_trace: data/raw/trace.log
+  raw_meta: data/raw/trace_meta.json
+  processed: data/processed/requests.csv
+  env_params: configs/env_params.json
+  validation_report: reports/data_validation.json
+  baseline_metrics: reports/baseline_metrics.json
+  baseline_episodes: reports/baseline_episodes.csv
+  model: models/dqn_policy.pt
+  train_meta: models/train_meta.json
+  episode_log: reports/episode_log.csv
+  reward_curve: reports/train_reward_curve.png
+  rl_metrics: reports/rl_metrics.json
+  rl_episodes: reports/rl_episodes.csv
+  comparison: reports/comparison.json
+  comparison_plot: reports/comparison.png
+
+# ---------------------------------------------------------------------------
+# Stage 1 — ingest: download the public NASA HTTP 1995 trace (Internet
+# Traffic Archive, replayed in the proposal as "public web traces").
+# URLs are tried in order; the first valid gzip wins.
+# ---------------------------------------------------------------------------
+ingest:
+  trace_name: nasa-http-jul95
+  trace_urls:
+    - "https://web.archive.org/web/20230517152439id_/https://ita.ee.lbl.gov/traces/NASA_access_log_Jul95.gz"
+    - "http://ita.ee.lbl.gov/traces/NASA_access_log_Jul95.gz"
+  timeout_seconds: 120
+  # Honest, documented last resort so the pipeline is re-runnable with no
+  # network. Writes a synthetic log in the SAME format; meta records the
+  # source so we never mistake it for real data.
+  allow_synthetic_fallback: true
+  synthetic_days: 31
+  synthetic_start: "1995-07-01"
+
+# ---------------------------------------------------------------------------
+# Stage 2 — extract: raw HTTP log -> per-minute request counts
+# ---------------------------------------------------------------------------
+extract:
+  # nothing to tune: the parser is fixed; stage kept for clean DAG granularity
+
+# ---------------------------------------------------------------------------
+# Stage 3 — validate: schema / nulls / ranges / continuity checks
+# ---------------------------------------------------------------------------
+validate:
+  min_days: 7                  # minimum usable data
+  max_missing_minutes_frac: 0.05
+  max_rate_per_minute: 50000   # sanity upper bound
+  train_frac: 0.8              # first 80% of days -> train, rest -> eval
+
+# ---------------------------------------------------------------------------
+# Stage 4 — build_env_config: derive simulator parameters from the trace
+# ---------------------------------------------------------------------------
+env_config:
+  service_rate_per_instance: 25      # req/min sustained per container (~4/s),
+                                     # calibrated on the trace: mean 47.9/min,
+                                     # p99 145/min, peak 405/min -> scale range 1-8
+  min_instances: 1
+  max_instances_cap: 24              # derived value is clamped to <= this
+  sla_latency_ms: 300                # p95 latency budget
+  base_latency_ms: 45                # service time floor
+  eval_days: 7                     # held-out days for evaluation
+
+# ---------------------------------------------------------------------------
+# Stage 5 — run_baseline: rule-based + random baselines on the train window
+# ---------------------------------------------------------------------------
+baseline:
+  name: threshold
+  scale_up_util: 0.65      # utilization above -> +1 instance
+  scale_down_util: 0.25    # utilization below and >min -> -1 instance
+  cooldown_minutes: 10
+  random_name: random
+  max_train_episodes: 6    # train-window days to replay (eval window is used later)
+
+# ---------------------------------------------------------------------------
+# Stage 6 — train_dqn: Double DQN, from scratch in PyTorch
+# ---------------------------------------------------------------------------
+dqn:
+  episodes: 60
+  hidden_sizes: [128, 128]
+  lr: 0.0008
+  gamma: 0.99
+  batch_size: 256
+  replay_capacity: 120000
+  learn_start: 2000
+  update_every: 4
+  target_sync_steps: 1000
+  eps_start: 1.0
+  eps_end: 0.05
+  eps_decay_frac: 0.6     # fraction of total training steps for eps decay
+
+sim:
+  # Reward shaping & economics (units: sim "cost units")
+  cost_per_instance_minute: 0.05   # cost of one container for one minute
+  cost_weight: 1.0
+  sla_weight: 3.0
+  change_weight: 0.2
+
+# ---------------------------------------------------------------------------
+# Stage 7 — evaluate: held-out comparison + model registration
+# ---------------------------------------------------------------------------
+eval:
+  episodes: 7
+
+mlflow:
+  experiment_name: autoscale-rl
+  registry_model_name: AutoScaleRLPolicy
+  stage_after_register: Staging
+  local_fallback_dir: mlruns   # ONLY used when tracking server is not configured

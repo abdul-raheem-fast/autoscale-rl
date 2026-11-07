@@ -1,0 +1,516 @@
+schema: '2.0'
+stages:
+  ingest:
+    cmd: python -m autoscale_rl.ingest
+    deps:
+    - path: src/autoscale_rl/config.py
+      hash: md5
+      md5: 02b63c3c19ede9df944c3d503087a426
+      size: 2305
+    - path: src/autoscale_rl/ingest.py
+      hash: md5
+      md5: 27606f44a5b9d2010ff541ba8d40c5c3
+      size: 7185
+    - path: src/autoscale_rl/mlflow_utils.py
+      hash: md5
+      md5: f69b8bed72cd3f1b4edefe12a53c5268
+      size: 4735
+    params:
+      params.yaml:
+        ingest:
+          trace_name: nasa-http-jul95
+          trace_urls:
+          - https://web.archive.org/web/20230517152439id_/https://ita.ee.lbl.gov/traces/NASA_access_log_Jul95.gz
+          - http://ita.ee.lbl.gov/traces/NASA_access_log_Jul95.gz
+          timeout_seconds: 120
+          allow_synthetic_fallback: true
+          synthetic_days: 31
+          synthetic_start: '1995-07-01'
+        mlflow:
+          experiment_name: autoscale-rl
+          registry_model_name: AutoScaleRLPolicy
+          stage_after_register: Staging
+          local_fallback_dir: mlruns
+        paths:
+          raw_trace: data/raw/trace.log
+          raw_meta: data/raw/trace_meta.json
+          processed: data/processed/requests.csv
+          env_params: configs/env_params.json
+          validation_report: reports/data_validation.json
+          baseline_metrics: reports/baseline_metrics.json
+          baseline_episodes: reports/baseline_episodes.csv
+          model: models/dqn_policy.pt
+          train_meta: models/train_meta.json
+          episode_log: reports/episode_log.csv
+          reward_curve: reports/train_reward_curve.png
+          rl_metrics: reports/rl_metrics.json
+          rl_episodes: reports/rl_episodes.csv
+          comparison: reports/comparison.json
+          comparison_plot: reports/comparison.png
+        seed: 20260907
+    outs:
+    - path: data/raw/trace.log
+      hash: md5
+      md5: 4138cd7e981746fa08de662228b567c2
+      size: 205242368
+    - path: data/raw/trace_meta.json
+      hash: md5
+      md5: 20e26aedbfc7f912dd7f14e351566008
+      size: 358
+  extract:
+    cmd: python -m autoscale_rl.extract
+    deps:
+    - path: data/raw/trace.log
+      hash: md5
+      md5: 4138cd7e981746fa08de662228b567c2
+      size: 205242368
+    - path: src/autoscale_rl/config.py
+      hash: md5
+      md5: 02b63c3c19ede9df944c3d503087a426
+      size: 2305
+    - path: src/autoscale_rl/extract.py
+      hash: md5
+      md5: 0b101c4e2cccd959416723beed68b4e0
+      size: 4519
+    - path: src/autoscale_rl/mlflow_utils.py
+      hash: md5
+      md5: f69b8bed72cd3f1b4edefe12a53c5268
+      size: 4735
+    params:
+      params.yaml:
+        mlflow:
+          experiment_name: autoscale-rl
+          registry_model_name: AutoScaleRLPolicy
+          stage_after_register: Staging
+          local_fallback_dir: mlruns
+        paths:
+          raw_trace: data/raw/trace.log
+          raw_meta: data/raw/trace_meta.json
+          processed: data/processed/requests.csv
+          env_params: configs/env_params.json
+          validation_report: reports/data_validation.json
+          baseline_metrics: reports/baseline_metrics.json
+          baseline_episodes: reports/baseline_episodes.csv
+          model: models/dqn_policy.pt
+          train_meta: models/train_meta.json
+          episode_log: reports/episode_log.csv
+          reward_curve: reports/train_reward_curve.png
+          rl_metrics: reports/rl_metrics.json
+          rl_episodes: reports/rl_episodes.csv
+          comparison: reports/comparison.json
+          comparison_plot: reports/comparison.png
+        seed: 20260907
+    outs:
+    - path: data/processed/requests.csv
+      hash: md5
+      md5: a1155327c355e881df74ba848783217f
+      size: 1220783
+  validate:
+    cmd: python -m autoscale_rl.validate
+    deps:
+    - path: data/processed/requests.csv
+      hash: md5
+      md5: a1155327c355e881df74ba848783217f
+      size: 1220783
+    - path: src/autoscale_rl/config.py
+      hash: md5
+      md5: 02b63c3c19ede9df944c3d503087a426
+      size: 2305
+    - path: src/autoscale_rl/mlflow_utils.py
+      hash: md5
+      md5: f69b8bed72cd3f1b4edefe12a53c5268
+      size: 4735
+    - path: src/autoscale_rl/validate.py
+      hash: md5
+      md5: 46614ab450ab2130683ce858bffe331c
+      size: 5674
+    params:
+      params.yaml:
+        mlflow:
+          experiment_name: autoscale-rl
+          registry_model_name: AutoScaleRLPolicy
+          stage_after_register: Staging
+          local_fallback_dir: mlruns
+        paths:
+          raw_trace: data/raw/trace.log
+          raw_meta: data/raw/trace_meta.json
+          processed: data/processed/requests.csv
+          env_params: configs/env_params.json
+          validation_report: reports/data_validation.json
+          baseline_metrics: reports/baseline_metrics.json
+          baseline_episodes: reports/baseline_episodes.csv
+          model: models/dqn_policy.pt
+          train_meta: models/train_meta.json
+          episode_log: reports/episode_log.csv
+          reward_curve: reports/train_reward_curve.png
+          rl_metrics: reports/rl_metrics.json
+          rl_episodes: reports/rl_episodes.csv
+          comparison: reports/comparison.json
+          comparison_plot: reports/comparison.png
+        seed: 20260907
+        validate:
+          min_days: 7
+          max_missing_minutes_frac: 0.05
+          max_rate_per_minute: 50000
+          train_frac: 0.8
+    outs:
+    - path: reports/data_validation.json
+      hash: md5
+      md5: 2d40d0f262e88f6e02f62ccf809dd962
+      size: 1691
+  env_config:
+    cmd: python -m autoscale_rl.env_config
+    deps:
+    - path: data/processed/requests.csv
+      hash: md5
+      md5: a1155327c355e881df74ba848783217f
+      size: 1220783
+    - path: reports/data_validation.json
+      hash: md5
+      md5: 2d40d0f262e88f6e02f62ccf809dd962
+      size: 1691
+    - path: src/autoscale_rl/config.py
+      hash: md5
+      md5: 02b63c3c19ede9df944c3d503087a426
+      size: 2305
+    - path: src/autoscale_rl/env_config.py
+      hash: md5
+      md5: 37a61652e958c7e42b39e6a0d43a44bf
+      size: 3992
+    - path: src/autoscale_rl/mlflow_utils.py
+      hash: md5
+      md5: f69b8bed72cd3f1b4edefe12a53c5268
+      size: 4735
+    - path: src/autoscale_rl/validate.py
+      hash: md5
+      md5: 46614ab450ab2130683ce858bffe331c
+      size: 5674
+    params:
+      params.yaml:
+        env_config:
+          service_rate_per_instance: 25
+          min_instances: 1
+          max_instances_cap: 24
+          sla_latency_ms: 300
+          base_latency_ms: 45
+          eval_days: 7
+        mlflow:
+          experiment_name: autoscale-rl
+          registry_model_name: AutoScaleRLPolicy
+          stage_after_register: Staging
+          local_fallback_dir: mlruns
+        paths:
+          raw_trace: data/raw/trace.log
+          raw_meta: data/raw/trace_meta.json
+          processed: data/processed/requests.csv
+          env_params: configs/env_params.json
+          validation_report: reports/data_validation.json
+          baseline_metrics: reports/baseline_metrics.json
+          baseline_episodes: reports/baseline_episodes.csv
+          model: models/dqn_policy.pt
+          train_meta: models/train_meta.json
+          episode_log: reports/episode_log.csv
+          reward_curve: reports/train_reward_curve.png
+          rl_metrics: reports/rl_metrics.json
+          rl_episodes: reports/rl_episodes.csv
+          comparison: reports/comparison.json
+          comparison_plot: reports/comparison.png
+        seed: 20260907
+        validate:
+          min_days: 7
+          max_missing_minutes_frac: 0.05
+          max_rate_per_minute: 50000
+          train_frac: 0.8
+    outs:
+    - path: configs/env_params.json
+      hash: md5
+      md5: 6f0d6d2ce1b80ef89ba5dd535803edb5
+      size: 931
+  baseline:
+    cmd: python -m autoscale_rl.baseline
+    deps:
+    - path: configs/env_params.json
+      hash: md5
+      md5: 6f0d6d2ce1b80ef89ba5dd535803edb5
+      size: 931
+    - path: src/autoscale_rl/baseline.py
+      hash: md5
+      md5: 42ad27712d17c7af03b0599938645f1b
+      size: 3689
+    - path: src/autoscale_rl/config.py
+      hash: md5
+      md5: 02b63c3c19ede9df944c3d503087a426
+      size: 2305
+    - path: src/autoscale_rl/context.py
+      hash: md5
+      md5: 841b2ce8862cdd6a7fa87ee62013ba0a
+      size: 1275
+    - path: src/autoscale_rl/evaluation.py
+      hash: md5
+      md5: 1b2a6717736a8a85e0070ff168cde733
+      size: 4059
+    - path: src/autoscale_rl/mlflow_utils.py
+      hash: md5
+      md5: f69b8bed72cd3f1b4edefe12a53c5268
+      size: 4735
+    - path: src/autoscale_rl/policies.py
+      hash: md5
+      md5: bfd8961c3787fbecde1bc1efd4c28beb
+      size: 2917
+    - path: src/autoscale_rl/simulator.py
+      hash: md5
+      md5: 34a6875497bb03b46bedb8f884b5ece5
+      size: 7981
+    params:
+      params.yaml:
+        baseline:
+          name: threshold
+          scale_up_util: 0.65
+          scale_down_util: 0.25
+          cooldown_minutes: 10
+          random_name: random
+          max_train_episodes: 6
+        mlflow:
+          experiment_name: autoscale-rl
+          registry_model_name: AutoScaleRLPolicy
+          stage_after_register: Staging
+          local_fallback_dir: mlruns
+        paths:
+          raw_trace: data/raw/trace.log
+          raw_meta: data/raw/trace_meta.json
+          processed: data/processed/requests.csv
+          env_params: configs/env_params.json
+          validation_report: reports/data_validation.json
+          baseline_metrics: reports/baseline_metrics.json
+          baseline_episodes: reports/baseline_episodes.csv
+          model: models/dqn_policy.pt
+          train_meta: models/train_meta.json
+          episode_log: reports/episode_log.csv
+          reward_curve: reports/train_reward_curve.png
+          rl_metrics: reports/rl_metrics.json
+          rl_episodes: reports/rl_episodes.csv
+          comparison: reports/comparison.json
+          comparison_plot: reports/comparison.png
+        seed: 20260907
+        sim:
+          cost_per_instance_minute: 0.05
+          cost_weight: 1.0
+          sla_weight: 3.0
+          change_weight: 0.2
+    outs:
+    - path: reports/baseline_episodes.csv
+      hash: md5
+      md5: 49218fd88a3abb8d9201389b1374279e
+      size: 913
+    - path: reports/baseline_metrics.json
+      hash: md5
+      md5: f39dc35c035fb9aa6ea7c5a56e02628d
+      size: 925
+  train_dqn:
+    cmd: python -m autoscale_rl.train
+    deps:
+    - path: configs/env_params.json
+      hash: md5
+      md5: 6f0d6d2ce1b80ef89ba5dd535803edb5
+      size: 931
+    - path: src/autoscale_rl/config.py
+      hash: md5
+      md5: 02b63c3c19ede9df944c3d503087a426
+      size: 2305
+    - path: src/autoscale_rl/context.py
+      hash: md5
+      md5: 841b2ce8862cdd6a7fa87ee62013ba0a
+      size: 1275
+    - path: src/autoscale_rl/dqn.py
+      hash: md5
+      md5: 8666f8c54e02d89728c42bb688d9bf7e
+      size: 6232
+    - path: src/autoscale_rl/evaluation.py
+      hash: md5
+      md5: 1b2a6717736a8a85e0070ff168cde733
+      size: 4059
+    - path: src/autoscale_rl/mlflow_utils.py
+      hash: md5
+      md5: f69b8bed72cd3f1b4edefe12a53c5268
+      size: 4735
+    - path: src/autoscale_rl/policies.py
+      hash: md5
+      md5: bfd8961c3787fbecde1bc1efd4c28beb
+      size: 2917
+    - path: src/autoscale_rl/simulator.py
+      hash: md5
+      md5: 34a6875497bb03b46bedb8f884b5ece5
+      size: 7981
+    - path: src/autoscale_rl/train.py
+      hash: md5
+      md5: e9bf204a9baffdebd88bb4ad18dac755
+      size: 7519
+    params:
+      params.yaml:
+        dqn:
+          episodes: 60
+          hidden_sizes:
+          - 128
+          - 128
+          lr: 0.0008
+          gamma: 0.99
+          batch_size: 256
+          replay_capacity: 120000
+          learn_start: 2000
+          update_every: 4
+          target_sync_steps: 1000
+          eps_start: 1.0
+          eps_end: 0.05
+          eps_decay_frac: 0.6
+        eval:
+          episodes: 7
+        mlflow:
+          experiment_name: autoscale-rl
+          registry_model_name: AutoScaleRLPolicy
+          stage_after_register: Staging
+          local_fallback_dir: mlruns
+        paths:
+          raw_trace: data/raw/trace.log
+          raw_meta: data/raw/trace_meta.json
+          processed: data/processed/requests.csv
+          env_params: configs/env_params.json
+          validation_report: reports/data_validation.json
+          baseline_metrics: reports/baseline_metrics.json
+          baseline_episodes: reports/baseline_episodes.csv
+          model: models/dqn_policy.pt
+          train_meta: models/train_meta.json
+          episode_log: reports/episode_log.csv
+          reward_curve: reports/train_reward_curve.png
+          rl_metrics: reports/rl_metrics.json
+          rl_episodes: reports/rl_episodes.csv
+          comparison: reports/comparison.json
+          comparison_plot: reports/comparison.png
+        seed: 20260907
+        sim:
+          cost_per_instance_minute: 0.05
+          cost_weight: 1.0
+          sla_weight: 3.0
+          change_weight: 0.2
+    outs:
+    - path: models/dqn_policy.pt
+      hash: md5
+      md5: bbf2f0226928dc4e743200866588fa2b
+      size: 74598
+    - path: models/train_meta.json
+      hash: md5
+      md5: 62dd05c1bea88d3e9c8273334b8e1798
+      size: 873
+    - path: reports/episode_log.csv
+      hash: md5
+      md5: 8b2057012c68bcc678a57da6a4b060b6
+      size: 9134
+    - path: reports/train_reward_curve.png
+      hash: md5
+      md5: ca3264294b04302fe5ac9c6ccf58c3ba
+      size: 63071
+  evaluate:
+    cmd: python -m autoscale_rl.evaluate
+    deps:
+    - path: configs/env_params.json
+      hash: md5
+      md5: 6f0d6d2ce1b80ef89ba5dd535803edb5
+      size: 931
+    - path: data/processed/requests.csv
+      hash: md5
+      md5: a1155327c355e881df74ba848783217f
+      size: 1220783
+    - path: models/dqn_policy.pt
+      hash: md5
+      md5: bbf2f0226928dc4e743200866588fa2b
+      size: 74598
+    - path: models/train_meta.json
+      hash: md5
+      md5: 62dd05c1bea88d3e9c8273334b8e1798
+      size: 873
+    - path: src/autoscale_rl/config.py
+      hash: md5
+      md5: 02b63c3c19ede9df944c3d503087a426
+      size: 2305
+    - path: src/autoscale_rl/context.py
+      hash: md5
+      md5: 841b2ce8862cdd6a7fa87ee62013ba0a
+      size: 1275
+    - path: src/autoscale_rl/dqn.py
+      hash: md5
+      md5: 8666f8c54e02d89728c42bb688d9bf7e
+      size: 6232
+    - path: src/autoscale_rl/evaluate.py
+      hash: md5
+      md5: 204af024418bc95eb0cfc6aeb2f99eae
+      size: 6647
+    - path: src/autoscale_rl/evaluation.py
+      hash: md5
+      md5: 1b2a6717736a8a85e0070ff168cde733
+      size: 4059
+    - path: src/autoscale_rl/mlflow_utils.py
+      hash: md5
+      md5: f69b8bed72cd3f1b4edefe12a53c5268
+      size: 4735
+    - path: src/autoscale_rl/policies.py
+      hash: md5
+      md5: bfd8961c3787fbecde1bc1efd4c28beb
+      size: 2917
+    - path: src/autoscale_rl/registry.py
+      hash: md5
+      md5: 00aeaae072d91ea17ab5a504ab225af0
+      size: 1960
+    - path: src/autoscale_rl/simulator.py
+      hash: md5
+      md5: 34a6875497bb03b46bedb8f884b5ece5
+      size: 7981
+    params:
+      params.yaml:
+        baseline:
+          name: threshold
+          scale_up_util: 0.65
+          scale_down_util: 0.25
+          cooldown_minutes: 10
+          random_name: random
+          max_train_episodes: 6
+        eval:
+          episodes: 7
+        mlflow:
+          experiment_name: autoscale-rl
+          registry_model_name: AutoScaleRLPolicy
+          stage_after_register: Staging
+          local_fallback_dir: mlruns
+        paths:
+          raw_trace: data/raw/trace.log
+          raw_meta: data/raw/trace_meta.json
+          processed: data/processed/requests.csv
+          env_params: configs/env_params.json
+          validation_report: reports/data_validation.json
+          baseline_metrics: reports/baseline_metrics.json
+          baseline_episodes: reports/baseline_episodes.csv
+          model: models/dqn_policy.pt
+          train_meta: models/train_meta.json
+          episode_log: reports/episode_log.csv
+          reward_curve: reports/train_reward_curve.png
+          rl_metrics: reports/rl_metrics.json
+          rl_episodes: reports/rl_episodes.csv
+          comparison: reports/comparison.json
+          comparison_plot: reports/comparison.png
+        seed: 20260907
+        sim:
+          cost_per_instance_minute: 0.05
+          cost_weight: 1.0
+          sla_weight: 3.0
+          change_weight: 0.2
+    outs:
+    - path: reports/comparison.json
+      hash: md5
+      md5: 760db0e79b2937a2dd73773dd37bd040
+      size: 2098
+    - path: reports/rl_episodes.csv
+      hash: md5
+      md5: 5343a5a82144d8ca958ff3c8aa18b854
+      size: 2079240
+    - path: reports/rl_metrics.json
+      hash: md5
+      md5: 96fd0c861e8b28fd0d88fe83281cc318
+      size: 425

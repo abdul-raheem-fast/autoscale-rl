@@ -1,0 +1,149 @@
+# =========================================================================
+# AutoScale-RL core pipeline — fully reproducible via `dvc repro`.
+# Named stages; each stage depends on params.yaml sections so config edits
+# invalidate exactly the right stages, and dvc.lock records md5 hashes of
+# every code/param/data dependency.
+#
+#   ingest -> extract -> validate -> env_config -> baseline  \
+#                                             |-> train_dqn -> evaluate
+#                                            /  (learns;  both compare on
+#                                                          held-out days)
+# =========================================================================
+
+stages:
+  ingest:
+    cmd: python -m autoscale_rl.ingest
+    deps:
+      - src/autoscale_rl/ingest.py
+      - src/autoscale_rl/config.py
+      - src/autoscale_rl/mlflow_utils.py
+    params:
+      - seed
+      - ingest
+      - paths
+      - mlflow
+    outs:
+      - data/raw/trace.log
+      - data/raw/trace_meta.json
+
+  extract:
+    cmd: python -m autoscale_rl.extract
+    deps:
+      - data/raw/trace.log
+      - src/autoscale_rl/extract.py
+      - src/autoscale_rl/config.py
+      - src/autoscale_rl/mlflow_utils.py
+    params:
+      - seed
+      - paths
+      - mlflow
+    outs:
+      - data/processed/requests.csv
+
+  validate:
+    cmd: python -m autoscale_rl.validate
+    deps:
+      - data/processed/requests.csv
+      - src/autoscale_rl/validate.py
+      - src/autoscale_rl/config.py
+      - src/autoscale_rl/mlflow_utils.py
+    params:
+      - seed
+      - validate
+      - paths
+      - mlflow
+    outs:
+      - reports/data_validation.json
+
+  env_config:
+    cmd: python -m autoscale_rl.env_config
+    deps:
+      - data/processed/requests.csv
+      - reports/data_validation.json
+      - src/autoscale_rl/env_config.py
+      - src/autoscale_rl/validate.py
+      - src/autoscale_rl/config.py
+      - src/autoscale_rl/mlflow_utils.py
+    params:
+      - seed
+      - env_config
+      - validate
+      - paths
+      - mlflow
+    outs:
+      - configs/env_params.json
+
+  baseline:
+    cmd: python -m autoscale_rl.baseline
+    deps:
+      - configs/env_params.json
+      - src/autoscale_rl/baseline.py
+      - src/autoscale_rl/context.py
+      - src/autoscale_rl/config.py
+      - src/autoscale_rl/mlflow_utils.py
+      - src/autoscale_rl/policies.py
+      - src/autoscale_rl/simulator.py
+      - src/autoscale_rl/evaluation.py
+    params:
+      - seed
+      - baseline
+      - sim
+      - paths
+      - mlflow
+    outs:
+      - reports/baseline_metrics.json
+      - reports/baseline_episodes.csv
+
+  train_dqn:
+    cmd: python -m autoscale_rl.train
+    deps:
+      - configs/env_params.json
+      - src/autoscale_rl/train.py
+      - src/autoscale_rl/context.py
+      - src/autoscale_rl/config.py
+      - src/autoscale_rl/mlflow_utils.py
+      - src/autoscale_rl/dqn.py
+      - src/autoscale_rl/policies.py
+      - src/autoscale_rl/simulator.py
+      - src/autoscale_rl/evaluation.py
+    params:
+      - seed
+      - dqn
+      - sim
+      - eval
+      - paths
+      - mlflow
+    outs:
+      - models/dqn_policy.pt
+      - models/train_meta.json
+      - reports/episode_log.csv
+      - reports/train_reward_curve.png
+
+  evaluate:
+    cmd: python -m autoscale_rl.evaluate
+    deps:
+      - configs/env_params.json
+      - data/processed/requests.csv
+      - models/dqn_policy.pt
+      - models/train_meta.json
+      - src/autoscale_rl/evaluate.py
+      - src/autoscale_rl/context.py
+      - src/autoscale_rl/config.py
+      - src/autoscale_rl/mlflow_utils.py
+      - src/autoscale_rl/dqn.py
+      - src/autoscale_rl/policies.py
+      - src/autoscale_rl/simulator.py
+      - src/autoscale_rl/evaluation.py
+      - src/autoscale_rl/registry.py
+    params:
+      - seed
+      - baseline
+      - eval
+      - sim
+      - paths
+      - mlflow
+    outs:
+      - reports/rl_metrics.json
+      - reports/rl_episodes.csv
+    metrics:
+      - reports/comparison.json

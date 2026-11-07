@@ -1,0 +1,23 @@
+# Pinned for reproducibility. Install with:
+#   python -m pip install -r requirements.txt
+#   python -m pip install -e . --no-deps
+
+# ---- Core scientific stack ----
+numpy==1.26.4
+pandas==2.2.3
+matplotlib==3.9.2
+PyYAML==6.0.2
+
+# ---- RL (models are implemented from scratch in PyTorch) ----
+# CPU build keeps the install small; swap for the default PyPI wheel if you have a GPU.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.5.1+cpu
+
+# ---- Tracking, registry & data versioning ----
+mlflow==2.14.3
+setuptools==70.3.0   # mlflow 2.14 needs pkg_resources (removed in setuptools >= 81)
+dvc==3.55.2
+pathspec==0.12.1     # dvc 3.55 resolves gitwildmatch patterns only on pathspec < 1.x
+
+# ---- Dev ----
+pytest==8.3.3

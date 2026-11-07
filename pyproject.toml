@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "autoscale-rl"
+version = "0.1.0"
+description = "AutoScale-RL: a safe reinforcement-learning autoscaler trained from scratch in a container traffic simulator (MLOps course project)."
+readme = "README.md"
+requires-python = ">=3.10,<3.13"
+license = { text = "MIT" }
+authors = [
+  { name = "M. Abdul Raheem" },
+  { name = "M. Hayyan Haider" },
+  { name = "Bilal Kashif" },
+]
+
+# Intentionally empty: dependencies are pinned in requirements.txt and installed
+# from the CPU PyTorch index (pip install -r requirements.txt). Keeping torch out
+# of the wheel metadata avoids accidentally pulling a multi-GB CUDA build.
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
