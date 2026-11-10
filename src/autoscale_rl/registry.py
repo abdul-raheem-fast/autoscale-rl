@@ -12,12 +12,19 @@ import sys
 from .mlflow_utils import is_remote_tracking
 
 
+VALID_STAGES = {"Staging", "Production"}
+
+
 def register_and_stage(model_uri: str, model_name: str, stage: str,
                        extra_tags: dict | None = None) -> str:
     """Register model under `model_name` and transition to `stage` (Staging).
 
     Returns a status string describing what happened.
     """
+    if stage not in VALID_STAGES:
+        raise ValueError(
+            f"Unsupported model stage {stage!r}; choose Staging or Production")
+
     import mlflow
     from mlflow.tracking import MlflowClient
 
@@ -43,7 +50,6 @@ def register_and_stage(model_uri: str, model_name: str, stage: str,
 
     try:  # describe registered model briefly
         details = client.get_model_version(model_name, version)
-        return (f"registered {model_name} v{version} run={details.run_id} "
-                f"stage={details.status_message or stage}")
-    except Exception:
+        return f"registered {model_name} v{version} run={details.run_id} stage={stage}"
+    except (AttributeError, RuntimeError):
         return f"registered {model_name} v{version} -> {stage}"

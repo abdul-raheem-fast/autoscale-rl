@@ -2,7 +2,7 @@
 
 **Safe reinforcement-learning autoscaling for containerized services — trained from scratch in a traffic simulator, engineered with a full MLOps pipeline.**
 
-MLOps course project (Fall 2026) · BCS-7A · Group members: **M. Abdul Raheem (23L-0588)**, **M. Hayyan Haider (23L-0727)**, **Bilal Kashif (23L-0757)**
+MLOps course project (Fall 2026) · BCS-7A
 
 > Milestone 1 scope: **core ML pipeline, fully reproducible** — no Docker, no cloud deployment, no REST APIs, no monitoring yet. Those come in later milestones.
 
@@ -114,7 +114,7 @@ autoscale-rl/
 ├── params.yaml               # every stage's config; the "single source of truth"
 ├── dvc.yaml                  # named DVC stages; dvc repro runs the whole DAG
 ├── dvc.lock                  # md5s of data/params/code per stage (committed)
-├── .dvc/config               # DVC remote (DagsHub) — machine-specific creds in config.local
+├── .dvc/config               # DVC remote (DagsHub); credentials stay in ignored config.local
 │
 ├── src/autoscale_rl/         # installed as an editable package
 │   ├── ingest.py             # S1: pinned NASA trace download (+ honest synthetic fallback)
@@ -169,6 +169,12 @@ autoscale-rl/
 
 ---
 
-## 9. License
+## 9. Team
+
+- M. Abdul Raheem
+- M. Hayyan Haider
+- Bilal Kashif
+
+## 10. License
 
 MIT (course-project code).
