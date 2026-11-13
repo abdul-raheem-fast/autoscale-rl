@@ -69,10 +69,13 @@ python scripts/setup_dvc_remote.py
  PowerShell users: `$events = Get-Content .env` … or simply export the variables manually:
 
 ```powershell
-$env:DAGSHUB_USER="abdul-raheem-fast"; $env:DAGSHUB_TOKEN="<token>"
+$env:DAGSHUB_USER="<your-dagshub-username>"; $env:DAGSHUB_TOKEN="<your-token>"
+$env:DAGSHUB_OWNER="abdul-raheem-fast"   # shared repo owner; collaborators keep their own user/token
 $env:MLFLOW_TRACKING_URI="https://dagshub.com/abdul-raheem-fast/autoscale-rl.mlflow"
 $env:MLFLOW_TRACKING_USERNAME=$env:DAGSHUB_USER; $env:MLFLOW_TRACKING_PASSWORD=$env:DAGSHUB_TOKEN
 ```
+
+> Team members other than the repo owner must be added as **collaborators (write access)** on the DagsHub repo, otherwise `dvc push` and model registration return 403.
 
 ---
 
