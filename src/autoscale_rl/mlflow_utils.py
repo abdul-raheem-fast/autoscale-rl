@@ -26,14 +26,16 @@ def get_tracking_uri() -> str:
     uri = os.environ.get("MLFLOW_TRACKING_URI")
     if uri:
         return uri
-    owner = os.environ.get("DAGSHUB_USER")
+    user = os.environ.get("DAGSHUB_USER")
+    # Repo owner may differ from the authenticating user (team collaborators).
+    owner = os.environ.get("DAGSHUB_OWNER") or user
     repo = os.environ.get("DAGSHUB_REPO", "autoscale-rl")
-    if owner:
+    if owner and user:
         uri = f"https://dagshub.com/{owner}/{repo}.mlflow"
         # DagsHub accepts the access token as password
         token = os.environ.get("DAGSHUB_TOKEN")
         if token:
-            os.environ.setdefault("MLFLOW_TRACKING_USERNAME", owner)
+            os.environ.setdefault("MLFLOW_TRACKING_USERNAME", user)
             os.environ.setdefault("MLFLOW_TRACKING_PASSWORD", token)
         return uri
     # --- local fallback (offline smoke test only) ---
