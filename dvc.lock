@@ -5,16 +5,16 @@ stages:
     deps:
     - path: src/autoscale_rl/config.py
       hash: md5
-      md5: 02b63c3c19ede9df944c3d503087a426
-      size: 2305
+      md5: 87c615c19075fa7155c46621a4a5ba0c
+      size: 2374
     - path: src/autoscale_rl/ingest.py
       hash: md5
-      md5: 27606f44a5b9d2010ff541ba8d40c5c3
-      size: 7185
+      md5: d30df9c64623122522052043e3e0f317
+      size: 7369
     - path: src/autoscale_rl/mlflow_utils.py
       hash: md5
-      md5: f69b8bed72cd3f1b4edefe12a53c5268
-      size: 4735
+      md5: 001dcb40293431ecf6a7a1397b182b6d
+      size: 5012
     params:
       params.yaml:
         ingest:
@@ -66,16 +66,16 @@ stages:
       size: 205242368
     - path: src/autoscale_rl/config.py
       hash: md5
-      md5: 02b63c3c19ede9df944c3d503087a426
-      size: 2305
+      md5: 87c615c19075fa7155c46621a4a5ba0c
+      size: 2374
     - path: src/autoscale_rl/extract.py
       hash: md5
-      md5: 0b101c4e2cccd959416723beed68b4e0
-      size: 4519
+      md5: 310612e141c099efe674a897365a6c76
+      size: 4648
     - path: src/autoscale_rl/mlflow_utils.py
       hash: md5
-      md5: f69b8bed72cd3f1b4edefe12a53c5268
-      size: 4735
+      md5: 001dcb40293431ecf6a7a1397b182b6d
+      size: 5012
     params:
       params.yaml:
         mlflow:
@@ -114,16 +114,16 @@ stages:
       size: 1220783
     - path: src/autoscale_rl/config.py
       hash: md5
-      md5: 02b63c3c19ede9df944c3d503087a426
-      size: 2305
+      md5: 87c615c19075fa7155c46621a4a5ba0c
+      size: 2374
     - path: src/autoscale_rl/mlflow_utils.py
       hash: md5
-      md5: f69b8bed72cd3f1b4edefe12a53c5268
-      size: 4735
+      md5: 001dcb40293431ecf6a7a1397b182b6d
+      size: 5012
     - path: src/autoscale_rl/validate.py
       hash: md5
-      md5: 46614ab450ab2130683ce858bffe331c
-      size: 5674
+      md5: 1882f6be41d5e18d12ab86f5fc5ac172
+      size: 5807
     params:
       params.yaml:
         mlflow:
@@ -171,20 +171,20 @@ stages:
       size: 1691
     - path: src/autoscale_rl/config.py
       hash: md5
-      md5: 02b63c3c19ede9df944c3d503087a426
-      size: 2305
+      md5: 87c615c19075fa7155c46621a4a5ba0c
+      size: 2374
     - path: src/autoscale_rl/env_config.py
       hash: md5
-      md5: 37a61652e958c7e42b39e6a0d43a44bf
-      size: 3992
+      md5: 22d0597f4a10006b273e89230ead5ed8
+      size: 4090
     - path: src/autoscale_rl/mlflow_utils.py
       hash: md5
-      md5: f69b8bed72cd3f1b4edefe12a53c5268
-      size: 4735
+      md5: 001dcb40293431ecf6a7a1397b182b6d
+      size: 5012
     - path: src/autoscale_rl/validate.py
       hash: md5
-      md5: 46614ab450ab2130683ce858bffe331c
-      size: 5674
+      md5: 1882f6be41d5e18d12ab86f5fc5ac172
+      size: 5807
     params:
       params.yaml:
         env_config:
@@ -235,32 +235,32 @@ stages:
       size: 931
     - path: src/autoscale_rl/baseline.py
       hash: md5
-      md5: 42ad27712d17c7af03b0599938645f1b
-      size: 3689
+      md5: 0b4139249df71512c85affcb20c1565c
+      size: 3772
     - path: src/autoscale_rl/config.py
       hash: md5
-      md5: 02b63c3c19ede9df944c3d503087a426
-      size: 2305
+      md5: 87c615c19075fa7155c46621a4a5ba0c
+      size: 2374
     - path: src/autoscale_rl/context.py
       hash: md5
-      md5: 841b2ce8862cdd6a7fa87ee62013ba0a
-      size: 1275
+      md5: 9fd57d6ed40385b61f69acd905a6f008
+      size: 1313
     - path: src/autoscale_rl/evaluation.py
       hash: md5
-      md5: 1b2a6717736a8a85e0070ff168cde733
-      size: 4059
+      md5: c753d394b99acccea47fdc370e6188e5
+      size: 4153
     - path: src/autoscale_rl/mlflow_utils.py
       hash: md5
-      md5: f69b8bed72cd3f1b4edefe12a53c5268
-      size: 4735
+      md5: 001dcb40293431ecf6a7a1397b182b6d
+      size: 5012
     - path: src/autoscale_rl/policies.py
       hash: md5
-      md5: bfd8961c3787fbecde1bc1efd4c28beb
-      size: 2917
+      md5: 40710ca45f17d6860e4406048a8b3174
+      size: 3008
     - path: src/autoscale_rl/simulator.py
       hash: md5
-      md5: 34a6875497bb03b46bedb8f884b5ece5
-      size: 7981
+      md5: ff45e44b9d2dbb65ad1b19efbd9847e1
+      size: 8164
     params:
       params.yaml:
         baseline:
@@ -315,36 +315,36 @@ stages:
       size: 931
     - path: src/autoscale_rl/config.py
       hash: md5
-      md5: 02b63c3c19ede9df944c3d503087a426
-      size: 2305
+      md5: 87c615c19075fa7155c46621a4a5ba0c
+      size: 2374
     - path: src/autoscale_rl/context.py
       hash: md5
-      md5: 841b2ce8862cdd6a7fa87ee62013ba0a
-      size: 1275
+      md5: 9fd57d6ed40385b61f69acd905a6f008
+      size: 1313
     - path: src/autoscale_rl/dqn.py
       hash: md5
-      md5: 8666f8c54e02d89728c42bb688d9bf7e
-      size: 6232
+      md5: fae473432d7e7f7f7e46e2e1cdc72f2e
+      size: 6383
     - path: src/autoscale_rl/evaluation.py
       hash: md5
-      md5: 1b2a6717736a8a85e0070ff168cde733
-      size: 4059
+      md5: c753d394b99acccea47fdc370e6188e5
+      size: 4153
     - path: src/autoscale_rl/mlflow_utils.py
       hash: md5
-      md5: f69b8bed72cd3f1b4edefe12a53c5268
-      size: 4735
+      md5: 001dcb40293431ecf6a7a1397b182b6d
+      size: 5012
     - path: src/autoscale_rl/policies.py
       hash: md5
-      md5: bfd8961c3787fbecde1bc1efd4c28beb
-      size: 2917
+      md5: 40710ca45f17d6860e4406048a8b3174
+      size: 3008
     - path: src/autoscale_rl/simulator.py
       hash: md5
-      md5: 34a6875497bb03b46bedb8f884b5ece5
-      size: 7981
+      md5: ff45e44b9d2dbb65ad1b19efbd9847e1
+      size: 8164
     - path: src/autoscale_rl/train.py
       hash: md5
-      md5: e9bf204a9baffdebd88bb4ad18dac755
-      size: 7519
+      md5: 1716a9dfb2674c52970f70cae34ff04b
+      size: 7692
     params:
       params.yaml:
         dqn:
@@ -394,20 +394,20 @@ stages:
     outs:
     - path: models/dqn_policy.pt
       hash: md5
-      md5: bbf2f0226928dc4e743200866588fa2b
+      md5: c4714954ed2bbf1048bd203cfbba263e
       size: 74598
     - path: models/train_meta.json
       hash: md5
-      md5: 62dd05c1bea88d3e9c8273334b8e1798
+      md5: 6bf9f94fc5d79c136a22796fb8015534
       size: 873
     - path: reports/episode_log.csv
       hash: md5
-      md5: 8b2057012c68bcc678a57da6a4b060b6
-      size: 9134
+      md5: 313bc6c6a69ababa293108cb662f9aee
+      size: 9130
     - path: reports/train_reward_curve.png
       hash: md5
-      md5: ca3264294b04302fe5ac9c6ccf58c3ba
-      size: 63071
+      md5: 6f532d54a401bb5b4f60ecd1eab0946c
+      size: 62550
   evaluate:
     cmd: python -m autoscale_rl.evaluate
     deps:
@@ -421,48 +421,48 @@ stages:
       size: 1220783
     - path: models/dqn_policy.pt
       hash: md5
-      md5: bbf2f0226928dc4e743200866588fa2b
+      md5: c4714954ed2bbf1048bd203cfbba263e
       size: 74598
     - path: models/train_meta.json
       hash: md5
-      md5: 62dd05c1bea88d3e9c8273334b8e1798
+      md5: 6bf9f94fc5d79c136a22796fb8015534
       size: 873
     - path: src/autoscale_rl/config.py
       hash: md5
-      md5: 02b63c3c19ede9df944c3d503087a426
-      size: 2305
+      md5: 87c615c19075fa7155c46621a4a5ba0c
+      size: 2374
     - path: src/autoscale_rl/context.py
       hash: md5
-      md5: 841b2ce8862cdd6a7fa87ee62013ba0a
-      size: 1275
+      md5: 9fd57d6ed40385b61f69acd905a6f008
+      size: 1313
     - path: src/autoscale_rl/dqn.py
       hash: md5
-      md5: 8666f8c54e02d89728c42bb688d9bf7e
-      size: 6232
+      md5: fae473432d7e7f7f7e46e2e1cdc72f2e
+      size: 6383
     - path: src/autoscale_rl/evaluate.py
       hash: md5
-      md5: 204af024418bc95eb0cfc6aeb2f99eae
-      size: 6647
+      md5: 94a8ebaac29458e2be97732e040d34b0
+      size: 6795
     - path: src/autoscale_rl/evaluation.py
       hash: md5
-      md5: 1b2a6717736a8a85e0070ff168cde733
-      size: 4059
+      md5: c753d394b99acccea47fdc370e6188e5
+      size: 4153
     - path: src/autoscale_rl/mlflow_utils.py
       hash: md5
-      md5: f69b8bed72cd3f1b4edefe12a53c5268
-      size: 4735
+      md5: 001dcb40293431ecf6a7a1397b182b6d
+      size: 5012
     - path: src/autoscale_rl/policies.py
       hash: md5
-      md5: bfd8961c3787fbecde1bc1efd4c28beb
-      size: 2917
+      md5: 40710ca45f17d6860e4406048a8b3174
+      size: 3008
     - path: src/autoscale_rl/registry.py
       hash: md5
-      md5: 00aeaae072d91ea17ab5a504ab225af0
-      size: 1960
+      md5: 69c0ece55b5d8e001f0aa6c26712da18
+      size: 2172
     - path: src/autoscale_rl/simulator.py
       hash: md5
-      md5: 34a6875497bb03b46bedb8f884b5ece5
-      size: 7981
+      md5: ff45e44b9d2dbb65ad1b19efbd9847e1
+      size: 8164
     params:
       params.yaml:
         baseline:
@@ -504,13 +504,13 @@ stages:
     outs:
     - path: reports/comparison.json
       hash: md5
-      md5: 760db0e79b2937a2dd73773dd37bd040
-      size: 2098
+      md5: d5a7d0824e7a3eda7efbdec9be79142a
+      size: 2110
     - path: reports/rl_episodes.csv
       hash: md5
-      md5: 5343a5a82144d8ca958ff3c8aa18b854
-      size: 2079240
+      md5: 3124ff952613e53a94022bc8b7c3a101
+      size: 2091009
     - path: reports/rl_metrics.json
       hash: md5
-      md5: 96fd0c861e8b28fd0d88fe83281cc318
-      size: 425
+      md5: f006bb4252677f202232cabe25fdbeec
+      size: 427
