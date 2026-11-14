@@ -3,6 +3,8 @@ data/raw/
 data/processed/
 models/
 reports/
+!reports/**/*.dvc
+!reports/screenshots/.gitignore
 # DVC cache only — dvc.lock and .dvc/config ARE committed
 .dvc/cache/
 .dvc/tmp/
